@@ -2,6 +2,7 @@ class List extends React.Component {
   constructor(){
     super()
     this.changeHandler = this.changeHandler.bind( this );
+    this.clickHandler = this.clickHandler.bind(this);
   }
 
   state = {
@@ -14,21 +15,39 @@ class List extends React.Component {
     console.log("change", event.target.value);
   }
 
-  render() {
-      // render the list with a map() here
+  clickHandler(event){
+    let todos = this.state.list;
+    todos.unshift(this.state.word);
+    this.setState({ list: todos, word: "" });
+  }
 
+  deleteHandler(removeIndex){
+    this.setState(state => ({
+        list: this.state.list.filter((item, index) => index !== removeIndex)
+    }));
+  }
+
+  render() {
+    let todoItem = this.state.list.map((item, index) => {
+        return (
+            <li id={index}>{item}
+            <button onClick={() => this.deleteHandler(index)}>Delete</button>
+            </li>
+            )
+    })
+      // render the list with a map() here
       console.log("rendering");
       return (
         <div className="list">
           <input onChange={this.changeHandler} value={this.state.word}/>
-          <button>add item</button>
+          <button onClick={this.clickHandler}>add item</button>
+          <ul>{todoItem}</ul>
         </div>
       );
   }
 }
 
 ReactDOM.render(
-    <List/>,
+    <List />,
     document.getElementById('root')
 );
-
